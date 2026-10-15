@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en-AU">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>esoterica</title>
+    <meta name="description" content="esoterica — independent clothing label.">
+  </head>
+  <body class="page-home">
+    <a class="skip-link" href="#shop">Skip to shop</a>
+
+    <header class="topbar" data-topbar data-over-hero="true">
+      <nav class="topbar__nav topbar__nav--mobile" aria-label="Main">
+        <ul>
+          <li><a href="#shop">Shop</a></li>
+          <li><a href="#about">About</a></li>
+        </ul>
+      </nav>
+      <a class="wordmark topbar__wordmark" href="./" aria-label="esoterica, home">esoterica</a>
+      <button type="button" class="topbar__cart" data-cart-toggle aria-haspopup="dialog" aria-controls="cart-drawer">Cart (<span data-cart-count>0</span>)</button>
+    </header>
+
+    <main>
+      <section class="hero" aria-label="Introduction" data-hero>
+        <div class="hero__media" data-hero-media></div>
+        <h1 class="hero__wordmark wordmark">esoterica</h1>
+        <a class="hero__shop" href="#shop">Shop</a>
+      </section>
+
+      <div class="shop-layout">
+        <nav class="side-nav" aria-label="Main">
+          <ul>
+            <li><a href="#shop">Shop</a></li>
+            <li><a href="#about">About</a></li>
+          </ul>
+        </nav>
+
+        <section id="shop" class="shop" aria-labelledby="shop-title" tabindex="-1">
+          <h2 id="shop-title" class="section-label">Shop</h2>
+          <ul class="product-grid" data-product-grid></ul>
+        </section>
+
+        <section id="about" class="about" aria-labelledby="about-title" tabindex="-1">
+          <h2 id="about-title" class="section-label">About</h2>
+          <div class="about__inner" data-about></div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="site-footer" data-site-footer></footer>
+
+    <script type="module" src="/src/home.ts"></script>
+  </body>
+</html>

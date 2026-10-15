@@ -1,0 +1,150 @@
+{
+  "dsc05265-2": {
+    "width": 4592,
+    "height": 3056,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600,
+      2000,
+      2560
+    ],
+    "bg": "#5a5249",
+    "source": "esoterica top photos/DSC05265 2.JPG",
+    "sourceMtime": 1789352640062.9512
+  },
+  "dsc05265-2-c20-0-52-100": {
+    "width": 2388,
+    "height": 3056,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600,
+      2000,
+      2388
+    ],
+    "bg": "#868484",
+    "source": "esoterica top photos/DSC05265 2.JPG",
+    "sourceMtime": 1789352640062.9512
+  },
+  "f4535fa6-b9e0-49a2-938c-e67fd8241075": {
+    "width": 1359,
+    "height": 1157,
+    "widths": [
+      480,
+      800,
+      1200,
+      1359
+    ],
+    "bg": "#c87365",
+    "source": "brand assets - web photos/f4535fa6-b9e0-49a2-938c-e67fd8241075.png",
+    "sourceMtime": 1789351016675.0364
+  },
+  "dsc05261-2": {
+    "width": 3056,
+    "height": 4592,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600,
+      2000,
+      2560
+    ],
+    "bg": "#696b6e",
+    "source": "esoterica top photos/DSC05261 2.JPG",
+    "sourceMtime": 1789352643218.2317
+  },
+  "dsc05274": {
+    "width": 3056,
+    "height": 4592,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600,
+      2000,
+      2560
+    ],
+    "bg": "#5e6163",
+    "source": "esoterica top photos/DSC05274.JPG",
+    "sourceMtime": 1789352653079.2617
+  },
+  "dsc05277": {
+    "width": 3056,
+    "height": 4592,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600,
+      2000,
+      2560
+    ],
+    "bg": "#5b5c60",
+    "source": "esoterica top photos/DSC05277.JPG",
+    "sourceMtime": 1789352657236.8865
+  },
+  "dsc05283": {
+    "width": 3056,
+    "height": 4592,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600,
+      2000,
+      2560
+    ],
+    "bg": "#535150",
+    "source": "esoterica top photos/DSC05283.JPG",
+    "sourceMtime": 1789352661682.8403
+  },
+  "dsc05284": {
+    "width": 3056,
+    "height": 4592,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600,
+      2000,
+      2560
+    ],
+    "bg": "#666564",
+    "source": "esoterica top photos/DSC05284.JPG",
+    "sourceMtime": 1789352666120.6333
+  },
+  "dsc05296": {
+    "width": 3056,
+    "height": 4592,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600,
+      2000,
+      2560
+    ],
+    "bg": "#6d6d6d",
+    "source": "esoterica top photos/DSC05296.JPG",
+    "sourceMtime": 1789352670111.8535
+  },
+  "dsc05363": {
+    "width": 3056,
+    "height": 4592,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600,
+      2000,
+      2560
+    ],
+    "bg": "#5d5045",
+    "source": "esoterica top photos/DSC05363.JPG",
+    "sourceMtime": 1789352683447.9226
+  }
+}
