@@ -203,11 +203,6 @@ p {
   object-fit: cover;
   object-position: var(--focus-desktop, 50% 50%);
 }
-@media (max-width: 700px) and (orientation: portrait) {
-  .hero__picture img {
-    object-position: var(--focus-mobile, 50% 50%);
-  }
-}
 .hero__wordmark {
   position: absolute;
   top: 19%;
@@ -219,6 +214,25 @@ p {
   left: 7vw;
   bottom: 28px;
   padding: 8px 0;
+}
+@media (max-width: 700px) and (orientation: portrait) {
+  /* A full-height portrait crop of the landscape photo can't hold both sky and garment. */
+  .hero {
+    height: min(100svh, 100vw);
+    min-height: 0;
+  }
+  .hero__picture img {
+    object-position: var(--focus-mobile, 50% 50%);
+  }
+  .hero__wordmark {
+    top: 20%;
+    left: var(--pad);
+    font-size: 14px;
+  }
+  .hero__shop {
+    left: var(--pad);
+    bottom: 8px;
+  }
 }
 
 /* ---------- Shop ---------- */
@@ -488,6 +502,7 @@ p {
 
 .pdp {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 24px;
   padding-bottom: 72px;
 }
@@ -629,7 +644,8 @@ p {
     overflow: visible;
   }
   .gallery__item:only-child {
-    grid-column: span 1;
+    grid-column: 1 / -1;
+    aspect-ratio: 4 / 3;
   }
   .pdp__panel {
     position: sticky;

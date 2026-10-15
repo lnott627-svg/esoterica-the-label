@@ -128,8 +128,8 @@ export const site = {
     mobile: {
       src: `${ROCK}/DSC05265 2.JPG`,
       alt: 'Model climbing a rock face in the Relic Top, seen from behind, with the coast below',
-      focus: '62% 50%',
-      crop: { left: 0.2, top: 0, width: 0.52, height: 1 },
+      focus: '50% 50%',
+      crop: { left: 0.1, top: 0, width: 0.67, height: 1 },
     } satisfies ImageRef,
   },
   about: {

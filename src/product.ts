@@ -218,3 +218,9 @@ const sizeGuide = root.querySelector<HTMLDialogElement>('[data-size-guide]')!;
 root.querySelector('[data-open-size-guide]')!.addEventListener('click', () => sizeGuide.showModal());
 root.querySelector('[data-close-size-guide]')!.addEventListener('click', () => sizeGuide.close());
 sizeGuide.addEventListener('click', (e) => e.target === sizeGuide && sizeGuide.close());
+sizeGuide.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    e.preventDefault();
+    sizeGuide.close();
+  }
+});

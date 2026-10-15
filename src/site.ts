@@ -165,6 +165,13 @@ function buildDrawer() {
     announce('Fit details saved');
   });
 
+  drawer.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      closeCart();
+    }
+  });
+
   drawer.addEventListener('close', () => {
     document.documentElement.classList.remove('has-modal');
     lastTrigger?.focus();
