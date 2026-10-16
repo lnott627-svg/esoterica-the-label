@@ -147,8 +147,13 @@ export const site = {
     body: null as string | null,
   },
   links: {
-    contact: null as string | null, // e.g. 'mailto:hello@example.com'
-    instagram: null as string | null, // e.g. 'https://instagram.com/…'
+    contact: 'contact.html' as string | null,
+    /** Enquiries from the contact page are addressed here. */
+    contactEmail: 'lnott627@gmail.com',
+    instagram: 'https://www.instagram.com/esotericathelabel?utm_source=ig_web_button_share_sheet&srtk=ZDNlZDc0MzIxNw==' as
+      | string
+      | null,
+    instagramHandle: '@esotericathelabel',
   },
   policies: {
     shipping: null as string | null,

@@ -13,6 +13,7 @@ export default defineConfig({
         home: resolve(import.meta.dirname, 'index.html'),
         product: resolve(import.meta.dirname, 'product.html'),
         policies: resolve(import.meta.dirname, 'policies.html'),
+        contact: resolve(import.meta.dirname, 'contact.html'),
       },
     },
   },

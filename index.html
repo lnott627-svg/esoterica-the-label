@@ -10,13 +10,15 @@
     <a class="skip-link" href="#shop">Skip to shop</a>
 
     <header class="topbar" data-topbar data-over-hero="true">
-      <nav class="topbar__nav topbar__nav--mobile" aria-label="Main">
-        <ul>
-          <li><a href="#shop">Shop</a></li>
-          <li><a href="#about">About</a></li>
-        </ul>
-      </nav>
-      <a class="wordmark topbar__wordmark" href="./" aria-label="esoterica, home">esoterica</a>
+      <div class="topbar__brand">
+        <a class="wordmark topbar__wordmark" href="./" aria-label="esoterica, home">esoterica</a>
+        <nav class="topbar__nav topbar__nav--mobile" aria-label="Main">
+          <ul>
+            <li><a href="#shop">Shop</a></li>
+            <li><a href="#about">About</a></li>
+          </ul>
+        </nav>
+      </div>
       <button type="button" class="topbar__cart" data-cart-toggle aria-haspopup="dialog" aria-controls="cart-drawer">Cart (<span data-cart-count>0</span>)</button>
     </header>
 
@@ -24,7 +26,6 @@
       <section class="hero" aria-label="Introduction" data-hero>
         <div class="hero__media" data-hero-media></div>
         <h1 class="hero__wordmark wordmark">esoterica</h1>
-        <a class="hero__shop" href="#shop">Shop</a>
       </section>
 
       <div class="shop-layout">
@@ -36,7 +37,7 @@
         </nav>
 
         <section id="shop" class="shop" aria-labelledby="shop-title" tabindex="-1">
-          <h2 id="shop-title" class="section-label">Shop</h2>
+          <h2 id="shop-title" class="visually-hidden">Shop</h2>
           <ul class="product-grid" data-product-grid></ul>
         </section>
 

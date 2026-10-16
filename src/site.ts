@@ -195,7 +195,7 @@ export function closeCart() {
 }
 
 function footerHtml(): string {
-  const { contact, instagram } = site.links;
+  const { contact, instagram, instagramHandle } = site.links;
   const link = (label: string, href: string | null, external = false) =>
     href
       ? `<a href="${escapeHtml(href)}"${external ? ' rel="noopener" target="_blank"' : ''}>${label}</a>`
@@ -203,7 +203,7 @@ function footerHtml(): string {
   return `<nav aria-label="Footer">
       <ul class="footer__links">
         <li>${link('Contact', contact)}</li>
-        <li>${link('Instagram', instagram, true)}</li>
+        <li>${link(escapeHtml(instagramHandle || 'Instagram'), instagram, true)}</li>
         <li><a href="policies.html#shipping">Shipping</a></li>
         <li><a href="policies.html#returns">Returns</a></li>
       </ul>
