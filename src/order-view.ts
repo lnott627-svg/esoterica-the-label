@@ -22,6 +22,7 @@ export type ShownOrder = {
   shipping: string;
   shippingLabel: string;
   total: string;
+  paymentStatus: 'paid' | 'refunded';
   fulfilmentStatus: 'unfulfilled' | 'fulfilled';
   fulfilmentNote: string | null;
   reviewStatus: 'ok' | 'needs_review';
@@ -96,16 +97,26 @@ export function adminOrdersHtml(input: { orders: ShownOrder[]; unfulfilled: numb
     .map((order) => {
       const next = order.fulfilmentStatus === 'fulfilled' ? 'unfulfilled' : 'fulfilled';
       const label = next === 'fulfilled' ? 'Mark as fulfilled' : 'Mark as not fulfilled';
+      const payment = order.paymentStatus === 'refunded' ? 'Refunded' : 'Paid';
       const review =
         order.reviewStatus === 'needs_review'
           ? `<p class="review">Check this payment in Stripe before cutting or sewing. ${t(order.reviewReason)}</p>`
           : '';
+      const refund =
+        order.paymentStatus === 'refunded'
+          ? ''
+          : `<form class="fulfil" data-refund data-order="${t(order.number)}">
+          <p class="muted">Cash is returned to the card they paid with. Change of mind refunds the garment price minus $11 per piece, and the shipping charge stays. A faulty garment is refunded in full, including shipping.</p>
+          <button type="submit" class="text-button" name="reason" value="change_of_mind">Refund change of mind</button>
+          <button type="submit" class="text-button" name="reason" value="faulty">Refund faulty garment</button>
+          <p class="field-error" data-refund-error></p>
+        </form>`;
       return `<article class="order">
         <div class="order__head">
           <h2 class="order__number">${t(order.number)}</h2>
           <p>${t(order.placedAtLabel)}</p>
         </div>
-        <p>${order.testMode ? 'Test payment · ' : ''}Paid · ${order.fulfilmentStatus === 'fulfilled' ? 'Fulfilled' : 'To make and send'}</p>
+        <p>${order.testMode ? 'Test payment · ' : ''}${payment} · ${order.fulfilmentStatus === 'fulfilled' ? 'Fulfilled' : 'To make and send'}</p>
         ${review}
         <p>${t(order.email) || 'No email captured'}${order.contactName ? `<br>${t(order.contactName)}` : ''}${order.phone ? `<br>${t(order.phone)}` : ''}</p>
         <p class="address">${order.address.length ? order.address.map((line) => t(line)).join('<br>') : 'No delivery address captured'}</p>
@@ -120,6 +131,7 @@ export function adminOrdersHtml(input: { orders: ShownOrder[]; unfulfilled: numb
           <button type="submit" class="${next === 'fulfilled' ? 'button' : 'text-button'}" data-status="${next}">${label}</button>
           <p class="field-error" data-fulfil-error></p>
         </form>
+        ${refund}
       </article>`;
     })
     .join('');

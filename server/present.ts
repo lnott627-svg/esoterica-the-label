@@ -31,7 +31,7 @@ export type PublicOrder = {
   shipping: string;
   shippingLabel: string;
   total: string;
-  paymentStatus: 'paid';
+  paymentStatus: 'paid' | 'refunded';
   fulfilmentStatus: 'unfulfilled' | 'fulfilled';
   fulfilmentNote: string | null;
   reviewStatus: 'ok' | 'needs_review';
@@ -112,7 +112,7 @@ export function toPublicOrder(row: OrderRow, shippingLabel: string): PublicOrder
     shipping: money(row.shipping_cents),
     shippingLabel,
     total: money(row.total_cents),
-    paymentStatus: 'paid',
+    paymentStatus: row.payment_status === 'refunded' ? 'refunded' : 'paid',
     fulfilmentStatus,
     fulfilmentNote: row.fulfilment_note,
     reviewStatus,
