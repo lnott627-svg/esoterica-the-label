@@ -52,9 +52,14 @@ a:hover {
 }
 
 button,
-input {
+input,
+textarea {
   font: inherit;
   color: inherit;
+}
+
+[hidden] {
+  display: none !important;
 }
 
 ul {
@@ -186,7 +191,9 @@ p {
 
 .page-product,
 .page-contact,
-.page-policies {
+.page-policies,
+.page-checkout,
+.page-admin {
   --topbar-h: 82px;
 }
 
@@ -404,6 +411,13 @@ p {
   border-color: #9a9a9a;
   background: #9a9a9a;
   cursor: not-allowed;
+}
+a.button {
+  text-align: center;
+  text-decoration: none;
+}
+a.button:hover {
+  text-decoration: none;
 }
 .button--small {
   display: inline-block;
@@ -909,12 +923,86 @@ dialog::backdrop {
 
 @media (min-width: 900px) {
   .policies,
-  .contact {
+  .contact,
+  .checkout,
+  .admin {
     padding-left: 160px;
   }
   .input {
     font-size: var(--fs);
   }
+}
+
+/* ---------- Checkout and orders ---------- */
+
+.checkout,
+.admin {
+  display: grid;
+  gap: 20px;
+  max-width: 40em;
+  padding: 40px var(--pad) 120px;
+}
+.admin {
+  max-width: 46em;
+}
+.cart-lines {
+  display: grid;
+}
+.totals {
+  display: grid;
+  gap: 6px;
+}
+.totals div,
+.order__head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.order {
+  display: grid;
+  gap: 12px;
+  padding: 16px 0;
+  border-top: 1px solid var(--line);
+}
+.order__number {
+  font-weight: 700;
+}
+.order__lines {
+  display: grid;
+  gap: 14px;
+}
+.fit-readout {
+  margin: 4px 0 0;
+}
+.fit-readout div {
+  display: flex;
+  gap: 8px;
+}
+.fit-readout dt {
+  color: var(--muted);
+}
+.fit-readout dd {
+  margin: 0;
+}
+.address {
+  margin: 0;
+}
+.review {
+  color: var(--error);
+}
+.fulfil {
+  display: grid;
+  gap: 10px;
+  justify-items: start;
+}
+.fulfil .button,
+.fulfil .input {
+  width: 100%;
+}
+.checkout .button,
+.admin .contact-form .button,
+.admin > .button {
+  margin-top: 4px;
 }
 
 @media (prefers-reduced-motion: reduce) {
