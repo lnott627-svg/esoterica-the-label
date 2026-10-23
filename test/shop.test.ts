@@ -7,7 +7,7 @@ import { formatMoney } from '../src/format.ts';
 import { adminOrdersHtml, type ShownOrder } from '../src/order-view.ts';
 import { openDatabase, get, type ShopDb } from '../server/db.ts';
 import { clearLoginAttempts, createHandler } from '../server/http.ts';
-import type { CheckoutCreate, CheckoutSnapshot, Payments, StripeEventInput } from '../server/payments.ts';
+import type { CheckoutCreate, CheckoutSnapshot, Payments, RefundState, StripeEventInput } from '../server/payments.ts';
 import { Shop, type Notifier } from '../server/shop.ts';
 
 const SECRET = 'whsec_esoterica_test_secret';
@@ -28,6 +28,8 @@ class FakePayments implements Payments {
   sessions = new Map<string, CheckoutSnapshot>();
   created: CheckoutCreate[] = [];
   expired: string[] = [];
+  refunds: { paymentIntentId: string; amountCents: number | undefined }[] = [];
+  charges = new Map<string, RefundState>();
   failCreate = false;
   pause: Promise<void> | null = null;
 
@@ -75,6 +77,14 @@ class FakePayments implements Payments {
     this.expired.push(id);
     const session = this.sessions.get(id);
     if (session?.status === 'open') session.status = 'expired';
+  }
+
+  async refundPayment(paymentIntentId: string, amountCents?: number) {
+    this.refunds.push({ paymentIntentId, amountCents });
+  }
+
+  async refundStateForCharge(chargeId: string) {
+    return this.charges.get(chargeId) ?? null;
   }
 
   constructEvent(payload: string, signature: string): StripeEventInput {
@@ -265,6 +275,51 @@ describe('checkout pricing and capacity', () => {
     assert.throws(() => shop.setFulfilment(paid.order.number, 'unfulfilled', null), /can’t be reopened/);
   });
 
+  test('a cash refund frees making capacity and keeps the restocking fee', async () => {
+    const { shop, payments, db } = harness();
+    await shop.startCheckout([{ ...green, quantity: 2, fit: {} }], 'refund-mind', ORIGIN);
+    const id = sessionId(db);
+    payments.pay(id);
+    const paid = await shop.paymentResult(id);
+    assert.equal(paid.state, 'paid');
+    if (paid.state !== 'paid') return;
+    assert.equal(shop.listOrders().unfulfilled, 1);
+
+    const changed = await shop.refund(paid.order.number, 'change_of_mind');
+    assert.equal(changed.paymentStatus, 'refunded');
+    assert.equal(payments.refunds.length, 1);
+    assert.equal(payments.refunds[0].paymentIntentId, `pi_${id}`);
+    assert.equal(payments.refunds[0].amountCents, 8000 * 2 - 1100 * 2);
+    assert.equal(shop.listOrders().unfulfilled, 0);
+    assert.equal(shop.quote([{ ...green, quantity: 4, fit: {} }]).canCheckout, true);
+
+    const again = await shop.refund(paid.order.number, 'change_of_mind');
+    assert.equal(again.paymentStatus, 'refunded');
+    assert.equal(payments.refunds.length, 1);
+
+    await shop.startCheckout([green], 'refund-webhook', ORIGIN);
+    const webhookId = sessionId(db);
+    payments.pay(webhookId);
+    const webhookPaid = await shop.paymentResult(webhookId);
+    if (webhookPaid.state !== 'paid') return;
+    payments.charges.set('ch_partial', { paymentIntentId: `pi_${webhookId}`, status: 'partial', amountRefundedCents: 6900 });
+    await shop.handleStripeEvent({ id: 'evt_partial_refund', type: 'charge.refunded', data: { object: { id: 'ch_partial' } } });
+    assert.equal(shop.listOrders().orders.find((order) => order.number === webhookPaid.order.number)?.paymentStatus, 'paid');
+    payments.charges.set('ch_full', { paymentIntentId: `pi_${webhookId}`, status: 'full', amountRefundedCents: 9200 });
+    await shop.handleStripeEvent({ id: 'evt_full_refund', type: 'charge.refunded', data: { object: { id: 'ch_full' } } });
+    assert.equal(shop.listOrders().orders.find((order) => order.number === webhookPaid.order.number)?.paymentStatus, 'refunded');
+    assert.equal(shop.listOrders().unfulfilled, 0);
+
+    await shop.startCheckout([green], 'refund-faulty', ORIGIN);
+    const faultyId = sessionId(db);
+    payments.pay(faultyId);
+    const faultyPaid = await shop.paymentResult(faultyId);
+    if (faultyPaid.state !== 'paid') return;
+    const faulty = await shop.refund(faultyPaid.order.number, 'faulty');
+    assert.equal(faulty.paymentStatus, 'refunded');
+    assert.equal(payments.refunds.at(-1)?.amountCents, undefined);
+  });
+
   test('a failed or mismatched payment cannot create a second order', async () => {
     const { shop, payments, db, sent } = harness();
     await shop.startCheckout([green], 'fail-key-01', ORIGIN);
@@ -423,6 +478,43 @@ describe('http webhook and admin', { concurrency: 1 }, () => {
     assert.equal(cross.status, 403);
   });
 
+  test('an admin refund accepts only change of mind or faulty', async () => {
+    const login = await fetch(`${base}/api/admin/login`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ password: 'test-password-123' }),
+    });
+    const token = (login.headers.get('set-cookie') ?? '').split(';')[0];
+
+    const anonymous = await fetch(`${base}/api/admin/orders/refund`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ number: 'ES-1001', reason: 'faulty' }),
+    });
+    assert.equal(anonymous.status, 403);
+
+    const rejected = await fetch(`${base}/api/admin/orders/refund`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', cookie: token },
+      body: JSON.stringify({ number: 'ES-1001', reason: 'store_credit' }),
+    });
+    assert.equal(rejected.status, 400);
+
+    const refunded = await fetch(`${base}/api/admin/orders/refund`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', cookie: token },
+      body: JSON.stringify({ number: 'ES-1001', reason: 'change_of_mind' }),
+    });
+    assert.equal(refunded.status, 200);
+    const body = (await refunded.json()) as { order: { paymentStatus: string } };
+    assert.equal(body.order.paymentStatus, 'refunded');
+    assert.equal(env.payments.refunds.at(-1)?.amountCents, 8000 - 1100);
+    const listed = await fetch(`${base}/api/admin/orders`, { headers: { cookie: token } });
+    const orders = (await listed.json()) as { unfulfilled: number; orders: { paymentStatus: string }[] };
+    assert.equal(orders.orders[0].paymentStatus, 'refunded');
+    assert.equal(orders.unfulfilled, 0);
+  });
+
   after(async () => {
     if (server) await new Promise<void>((resolve) => server.close(() => resolve()));
   });
@@ -455,6 +547,7 @@ test('order pages escape customer text and show unanswered fit questions', () =>
     shipping: formatMoney(12),
     shippingLabel: 'Shipping within Australia',
     total: formatMoney(92),
+    paymentStatus: 'paid',
     fulfilmentStatus: 'unfulfilled',
     fulfilmentNote: null,
     reviewStatus: 'ok',

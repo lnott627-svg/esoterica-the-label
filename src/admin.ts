@@ -43,6 +43,12 @@ root.addEventListener('submit', (event) => {
     void signIn(form);
     return;
   }
+  if (form.matches('[data-refund]')) {
+    event.preventDefault();
+    const reason = (event.submitter as HTMLButtonElement | null)?.value;
+    void sendRefund(form, reason);
+    return;
+  }
   if (form.matches('[data-order]')) {
     event.preventDefault();
     void fulfil(form);
@@ -70,6 +76,25 @@ async function signIn(form: HTMLFormElement): Promise<void> {
   if (!response.ok) {
     root.innerHTML = loginHtml(data.error ?? 'That password isn’t right.');
     root.querySelector<HTMLInputElement>('#admin-password')?.focus();
+    return;
+  }
+  await load();
+}
+
+async function sendRefund(form: HTMLFormElement, reason: string | undefined): Promise<void> {
+  const number = form.dataset.order;
+  const error = form.querySelector<HTMLElement>('[data-refund-error]')!;
+  const buttons = [...form.querySelectorAll<HTMLButtonElement>('button')];
+  for (const button of buttons) button.disabled = true;
+  const response = await fetch('/api/admin/orders/refund', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', accept: 'application/json' },
+    body: JSON.stringify({ number, reason }),
+  });
+  const data = (await response.json().catch(() => ({}))) as { error?: string };
+  if (!response.ok) {
+    error.textContent = data.error ?? 'That refund could not be made.';
+    for (const button of buttons) button.disabled = false;
     return;
   }
   await load();

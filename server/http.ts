@@ -118,6 +118,15 @@ async function route(
     sendJson(res, 200, { order: deps.shop.setFulfilment(fulfil[1], status, note) });
     return;
   }
+  if (path === '/api/admin/orders/refund' && req.method === 'POST') {
+    requireAdmin(deps, req, now);
+    const body = await readJson(req);
+    const reason = body.reason === 'change_of_mind' || body.reason === 'faulty' ? body.reason : null;
+    if (!reason) throw new OrderError('invalid', 'Choose change of mind or faulty.');
+    const number = typeof body.number === 'string' ? body.number : '';
+    sendJson(res, 200, { order: await deps.shop.refund(number, reason) });
+    return;
+  }
   sendJson(res, 404, { error: 'Not found', code: 'not_found' });
 }
 

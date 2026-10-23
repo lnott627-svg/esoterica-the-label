@@ -186,15 +186,20 @@ export class Shop {
     if (this.seenEvent(event.id)) return { duplicate: true };
     const sessionId = event.data?.object?.id;
     if (!sessionId) throw new OrderError('invalid', 'Webhook is missing a checkout session.');
-    if (
-      event.type === 'checkout.session.completed' ||
-      event.type === 'checkout.session.async_payment_succeeded' ||
-      event.type === 'checkout.session.async_payment_failed' ||
-      event.type === 'checkout.session.expired'
-    ) {
-      if (event.type === 'checkout.session.async_payment_failed') await this.fail(sessionId);
-      else if (event.type === 'checkout.session.expired') await this.expire(sessionId);
-      else await this.settle(sessionId);
+    switch (event.type) {
+      case 'checkout.session.completed':
+      case 'checkout.session.async_payment_succeeded':
+        await this.settle(sessionId);
+        break;
+      case 'checkout.session.async_payment_failed':
+        await this.fail(sessionId);
+        break;
+      case 'checkout.session.expired':
+        await this.expire(sessionId);
+        break;
+      case 'charge.refunded':
+        await this.syncRefund(sessionId); // sessionId is the charge id for this event
+        break;
     }
     this.rememberEvent(event.id, event.type);
     return { duplicate: false };
@@ -223,7 +228,10 @@ export class Shop {
       ),
     );
     const orders = rows.map((row) => toPublicOrder(row, site.shippingRate.displayName));
-    return { orders, unfulfilled: orders.filter((order) => order.fulfilmentStatus === 'unfulfilled').length };
+    return {
+      orders,
+      unfulfilled: orders.filter((order) => order.paymentStatus === 'paid' && order.fulfilmentStatus === 'unfulfilled').length,
+    };
   }
 
   setFulfilment(number: string, status: 'fulfilled' | 'unfulfilled', note: string | null): PublicOrder {
@@ -247,6 +255,39 @@ export class Shop {
       return get<OrderRow>(this.db.prepare(`SELECT ${ORDER_COLUMNS} FROM orders WHERE number = ?`), number)!;
     });
     return toPublicOrder(updated, site.shippingRate.displayName);
+  }
+
+  async refund(number: string, reason: 'change_of_mind' | 'faulty'): Promise<PublicOrder> {
+    if (!this.payments) throw new OrderError('payments', 'Payments aren’t available right now.');
+    if (!/^ES-\d+$/.test(number)) throw new OrderError('not_found', 'Order not found.');
+    const row = get<{
+      payment_intent_id: string | null;
+      payment_status: string;
+      subtotal_cents: number;
+      lines: string;
+    }>(
+      this.db.prepare('SELECT payment_intent_id, payment_status, subtotal_cents, lines FROM orders WHERE number = ?'),
+      number,
+    );
+    if (!row) throw new OrderError('not_found', 'Order not found.');
+    if (row.payment_status === 'paid') {
+      if (!row.payment_intent_id) throw new OrderError('invalid', 'This order has no payment to refund.');
+      let amountCents: number | undefined; // undefined = full refund incl. shipping (faulty / ACL)
+      if (reason === 'change_of_mind') {
+        const items = (JSON.parse(row.lines) as PricedLine[]).reduce((n, l) => n + l.quantity, 0);
+        const restock = 1100 * items; // $11 AUD per item
+        amountCents = row.subtotal_cents - restock; // shipping is NOT refunded
+        if (amountCents <= 0) {
+          throw new OrderError('invalid', 'The restocking fee meets or exceeds the item value — nothing to refund.');
+        }
+      }
+      await this.payments.refundPayment(row.payment_intent_id, amountCents);
+      this.db.prepare(`UPDATE orders SET payment_status = 'refunded' WHERE number = ? AND payment_status = 'paid'`).run(number);
+    } else if (row.payment_status !== 'refunded') {
+      throw new OrderError('invalid', 'Only a paid order can be refunded.');
+    }
+    const full = get<OrderRow>(this.db.prepare(`SELECT ${ORDER_COLUMNS} FROM orders WHERE number = ?`), number)!;
+    return toPublicOrder(full, site.shippingRate.displayName);
   }
 
   private async settle(sessionId: string): Promise<PaymentResult> {
@@ -285,6 +326,15 @@ export class Shop {
       return;
     }
     this.releaseHeld(session?.reservationId ?? null, sessionId);
+  }
+
+  private async syncRefund(chargeId: string): Promise<void> {
+    if (!this.payments) return;
+    const state = await this.payments.refundStateForCharge(chargeId);
+    if (!state?.paymentIntentId || state.status !== 'full') return; // partial refunds don't free the slot
+    this.db
+      .prepare(`UPDATE orders SET payment_status = 'refunded' WHERE payment_intent_id = ? AND payment_status = 'paid'`)
+      .run(state.paymentIntentId);
   }
 
   private async retrieve(sessionId: string): Promise<CheckoutSnapshot | null> {

@@ -56,11 +56,19 @@ export type StripeEventInput = {
   data: { object: { id?: string } };
 };
 
+export type RefundState = {
+  paymentIntentId: string | null;
+  status: 'none' | 'partial' | 'full';
+  amountRefundedCents: number;
+};
+
 export type Payments = {
   testMode: boolean;
   createCheckoutSession(input: CheckoutCreate): Promise<{ id: string; url: string }>;
   retrieveCheckoutSession(id: string): Promise<CheckoutSnapshot | null>;
   expireCheckoutSession(id: string): Promise<void>;
+  refundPayment(paymentIntentId: string, amountCents?: number): Promise<void>;
+  refundStateForCharge(chargeId: string): Promise<RefundState | null>;
   constructEvent(payload: string, signature: string): StripeEventInput;
 };
 
@@ -200,6 +208,24 @@ export function createStripePayments(secretKey: string, webhookSecret: string): 
     },
     async expireCheckoutSession(id) {
       await stripe.checkout.sessions.expire(id);
+    },
+    async refundPayment(paymentIntentId, amountCents) {
+      await stripe.refunds.create({
+        payment_intent: paymentIntentId,
+        ...(amountCents != null ? { amount: amountCents } : {}), // omit = full refund
+      });
+    },
+    async refundStateForCharge(chargeId) {
+      try {
+        const charge = await stripe.charges.retrieve(chargeId);
+        const pi = typeof charge.payment_intent === 'string' ? charge.payment_intent : charge.payment_intent?.id ?? null;
+        const amountRefundedCents = charge.amount_refunded ?? 0;
+        const status = amountRefundedCents === 0 ? 'none' : charge.refunded ? 'full' : 'partial';
+        return { paymentIntentId: pi, status, amountRefundedCents };
+      } catch (error) {
+        if (error instanceof Stripe.errors.StripeInvalidRequestError && error.statusCode === 404) return null;
+        throw error;
+      }
     },
     constructEvent(payload, signature) {
       const event = stripe.webhooks.constructEvent(payload, signature, webhookSecret);
