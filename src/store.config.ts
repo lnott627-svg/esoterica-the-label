@@ -53,7 +53,13 @@ export type Product = {
     rows: Record<string, SizeMeasurements> | null;
     note: string | null;
   };
-  /** Stock per colour/size. `null` = unknown; the prototype does not limit quantities. */
+  /**
+   * How many of each colour and size can be in progress at once
+   * (open checkouts, plus paid orders that are not yet fulfilled).
+   * This is making capacity for a one-person studio, not warehouse stock.
+   */
+  capacity: Record<string, Record<string, number>> | null;
+  /** Warehouse stock. Leave null while garments are made to order. */
   inventory: Record<string, Record<string, number>> | null;
   details: string[] | null;
   fit: string[] | null;
@@ -107,6 +113,10 @@ export const products: Product[] = [
       rows: null, // e.g. { XS: { 'Chest, flat (cm)': '38', ... }, ... }
       note: null,
     },
+    capacity: {
+      brown: { XS: 4, S: 4, M: 4, L: 4, XL: 4 },
+      green: { XS: 4, S: 4, M: 4, L: 4, XL: 4 },
+    },
     inventory: null,
     // Suggestions from the photographs, to confirm before publishing:
     // halter neck tied with knotted straps, laced side, open back, long back panel.
@@ -159,6 +169,19 @@ export const site = {
     shipping: null as string | null,
     returns: null as string | null,
   },
+  /**
+   * Charged on the server and shown before payment. Provisional until a carrier
+   * is chosen — change the amount here, not in the browser.
+   */
+  shippingRate: {
+    displayName: 'Shipping within Australia',
+    amount: 12,
+    currency: 'AUD' as const,
+    countries: ['AU'] as const,
+    note: 'Provisional flat rate for delivery within Australia. The carrier and delivery time are not finalised yet.',
+  },
+  /** How long an unpaid Stripe Checkout holds making capacity. Stripe requires at least 30 minutes. */
+  checkoutHoldMinutes: 60,
 };
 
 export type MissingItem = { area: string; item: string };
@@ -171,7 +194,7 @@ export function listMissingInfo(): MissingItem[] {
     if (!p.price) missing.push({ area, item: 'Price' });
     if (!p.sizes?.length) missing.push({ area, item: 'Sizes' });
     if (!p.sizeGuide.columns || !p.sizeGuide.rows) missing.push({ area, item: 'Size guide garment measurements' });
-    if (!p.inventory) missing.push({ area, item: 'Inventory / stock quantities' });
+    if (!p.capacity) missing.push({ area, item: 'Order capacity per colour and size' });
     if (!p.details) missing.push({ area, item: 'Details (fabric composition, construction)' });
     if (!p.fit) missing.push({ area, item: 'Fit notes' });
     if (!p.care) missing.push({ area, item: 'Care instructions' });

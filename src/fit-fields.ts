@@ -1,4 +1,4 @@
-import { FIT_QUESTIONS, type FitAnswers, type FitQuestionId } from './cart.ts';
+import { FIT_QUESTIONS, summariseFit, type FitAnswers } from './fit.ts';
 import { escapeHtml } from './format.ts';
 
 /** Optional fit questions as radio groups with a per-question clear button. Nothing is preselected. */
@@ -48,6 +48,5 @@ export function bindFitFields(container: HTMLElement) {
 }
 
 export function fitSummary(fit: FitAnswers): string | null {
-  const parts = FIT_QUESTIONS.filter((q) => fit[q.id]).map((q) => `${q.short}: ${fit[q.id as FitQuestionId]}`);
-  return parts.length ? parts.join(' · ') : null;
+  return summariseFit(fit);
 }

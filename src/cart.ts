@@ -1,34 +1,13 @@
 import { products, type Product } from './store.config.ts';
+import { cleanFit, FIT_QUESTIONS, summariseFit, type FitAnswers } from './fit.ts';
 
 /*
- * Prototype cart, persisted to localStorage. No checkout or payment is wired up.
- * When a commerce backend is connected, map each line with `toOrderLine` so the
- * fit answers travel with the order (e.g. as Shopify line item attributes).
+ * Cart, persisted to localStorage. Payment happens on Stripe Checkout.
+ * Fit answers are part of the line key so they stay attached to that item.
  */
 
-export const FIT_QUESTIONS = [
-  {
-    id: 'topSize',
-    label: 'What top size do you generally wear?',
-    short: 'Usual top size',
-    options: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
-  },
-  {
-    id: 'torsoLength',
-    label: 'How would you describe your torso length?',
-    short: 'Torso length',
-    options: ['Short', 'Medium', 'Long'],
-  },
-  {
-    id: 'bustSize',
-    label: 'How would you describe your bust size?',
-    short: 'Bust size',
-    options: ['XS', 'S', 'M', 'L'],
-  },
-] as const;
-
-export type FitQuestionId = (typeof FIT_QUESTIONS)[number]['id'];
-export type FitAnswers = Partial<Record<FitQuestionId, string>>;
+export { FIT_QUESTIONS, cleanFit, summariseFit, type FitAnswers };
+export type { FitQuestionId } from './fit.ts';
 
 export type CartLine = {
   key: string;
@@ -45,15 +24,6 @@ const MAX_QTY = 10;
 type Listener = (lines: CartLine[]) => void;
 const listeners = new Set<Listener>();
 let lines: CartLine[] = load();
-
-export function cleanFit(fit: FitAnswers): FitAnswers {
-  const out: FitAnswers = {};
-  for (const q of FIT_QUESTIONS) {
-    const v = fit[q.id];
-    if (v && (q.options as readonly string[]).includes(v)) out[q.id] = v;
-  }
-  return out;
-}
 
 function lineKey(productId: string, colourId: string, size: string, fit: FitAnswers): string {
   const f = FIT_QUESTIONS.map((q) => fit[q.id] ?? '').join(',');
@@ -144,6 +114,10 @@ export function setQuantity(key: string, quantity: number) {
 
 export function removeLine(key: string) {
   commit(lines.filter((l) => l.key !== key));
+}
+
+export function clear() {
+  commit([]);
 }
 
 /** Updates fit answers; returns the line's new key (lines merge if they become identical). */

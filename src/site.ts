@@ -86,6 +86,10 @@ function renderDrawer(focus?: { key: string; selector: string }) {
     const sub = cart.subtotal();
     foot.hidden = false;
     foot.querySelector('[data-subtotal]')!.innerHTML = sub == null ? todo('price') : formatMoney(sub);
+    const blocked = sub == null;
+    foot.querySelector<HTMLElement>('[data-checkout]')!.hidden = blocked;
+    foot.querySelector<HTMLElement>('[data-checkout-disabled]')!.hidden = !blocked;
+    foot.querySelector<HTMLElement>('[data-checkout-note]')!.hidden = blocked;
   }
   drawer.querySelector('[data-drawer-count]')!.textContent = `(${cart.count()})`;
   if (focus) {
@@ -109,8 +113,9 @@ function buildDrawer() {
       <div class="drawer__body"></div>
       <div class="drawer__foot" hidden>
         <div class="drawer__subtotal"><span>Subtotal</span><span data-subtotal></span></div>
-        <p class="muted">This is a prototype cart. Checkout isn't connected yet, so no order or payment can be made.</p>
-        <button type="button" class="button" disabled aria-disabled="true">Checkout unavailable</button>
+        <p class="muted" data-checkout-note>Shipping within Australia is added on the next page, before you pay. You’ll enter your email and delivery address on Stripe. No account is needed.</p>
+        <a class="button" href="checkout.html" data-checkout>Checkout</a>
+        <button type="button" class="button" data-checkout-disabled disabled hidden>Checkout unavailable</button>
       </div>
     </div>`;
   document.body.append(drawer);

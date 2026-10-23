@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en-AU">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex">
+    <title>Payment — esoterica</title>
+  </head>
+  <body class="page-checkout">
+    <a class="skip-link" href="#content">Skip to content</a>
+
+    <header class="topbar topbar--solid">
+      <div class="topbar__brand">
+        <a class="wordmark topbar__wordmark" href="./" aria-label="esoterica, home">esoterica</a>
+        <nav class="topbar__nav" aria-label="Main">
+          <ul>
+            <li><a href="./#shop">Shop</a></li>
+            <li><a href="./#about">About</a></li>
+          </ul>
+        </nav>
+      </div>
+      <button type="button" class="topbar__cart" data-cart-toggle aria-haspopup="dialog" aria-controls="cart-drawer">Cart (<span data-cart-count>0</span>)</button>
+    </header>
+
+    <main id="content" class="checkout" tabindex="-1" data-result="success"></main>
+
+    <footer class="site-footer" data-site-footer></footer>
+
+    <script type="module" src="/src/checkout-result.ts"></script>
+  </body>
+</html>
