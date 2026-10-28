@@ -172,6 +172,10 @@ p {
 }
 .topbar__wordmark {
   font-size: 22px;
+  position: absolute;
+  left: 50%;
+  top: 12px;
+  transform: translateX(-50%);
 }
 .topbar__cart {
   padding: 4px 0;
