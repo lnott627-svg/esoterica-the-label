@@ -79,7 +79,8 @@ export const products: Product[] = [
         id: 'brown',
         name: 'Brown',
         swatch: '#5a4232', // approximate; adjust to match the fabric
-        status: 'available',
+        // Flip back to 'available' once real photographs of the Brown colour are added.
+        status: 'planned',
         images: [],
       },
       {
