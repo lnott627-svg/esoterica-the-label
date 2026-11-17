@@ -142,9 +142,9 @@ describe('checkout pricing and capacity', () => {
   test('prices and shipping are taken from the server, and fit answers are optional', async () => {
     const { shop, payments } = harness();
     const quote = shop.quote([{ ...green, fit: {} }, { productId: 'relic-top', colourId: 'brown', size: 'S', quantity: 2 }]);
-    assert.equal(quote.subtotal, formatMoney(80 + 160));
+    assert.equal(quote.subtotal, formatMoney(110 + 220));
     assert.equal(quote.shipping, formatMoney(12));
-    assert.equal(quote.total, formatMoney(252));
+    assert.equal(quote.total, formatMoney(342));
     assert.equal(quote.canCheckout, true);
     assert.equal(quote.lines[0].fitSummary, null);
     assert.equal(quote.lines[1].quantity, 2);
@@ -155,7 +155,7 @@ describe('checkout pricing and capacity', () => {
       ORIGIN,
     );
     assert.match(started.url, /^https:\/\/checkout\.stripe\.com\/c\/pay\/cs_test_/);
-    assert.equal(payments.created[0].lines[0].unitAmountCents, 8000);
+    assert.equal(payments.created[0].lines[0].unitAmountCents, 11000);
     assert.equal(payments.created[0].shippingCents, 1200);
     assert.match(payments.created[0].successUrl, /\/checkout-success\.html\?session_id=\{CHECKOUT_SESSION_ID\}$/);
     assert.match(payments.created[0].cancelUrl, /\/checkout-cancel\.html\?reservation=/);
@@ -439,7 +439,7 @@ test('order pages escape customer text and show unanswered fit questions', () =>
     address: ['1 <b>Example</b> St'],
     lines: [
       {
-        productName: 'Relic Top',
+        productName: 'Prima Top',
         colourName: 'Green',
         size: 'M',
         quantity: 1,

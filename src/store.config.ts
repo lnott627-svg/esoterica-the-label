@@ -71,9 +71,9 @@ const ROCK = 'esoterica top photos';
 export const products: Product[] = [
   {
     id: 'relic-top',
-    name: 'Relic Top',
-    nameConfirmed: false,
-    price: { amount: 80, currency: 'AUD' },
+    name: 'Prima Top',
+    nameConfirmed: true,
+    price: { amount: 110, currency: 'AUD' },
     colours: [
       {
         id: 'brown',
@@ -89,13 +89,13 @@ export const products: Product[] = [
         status: 'available',
         // Provisional rock-face portraits; to be replaced with white-background footage.
         images: [
-          { src: `${ROCK}/DSC05261 2.JPG`, alt: 'Relic Top in Green, worn with jeans, front view against a rock face', focus: '50% 30%' },
-          { src: `${ROCK}/DSC05274.JPG`, alt: 'Relic Top in Green, front view with the halter neck tied', focus: '50% 30%' },
-          { src: `${ROCK}/DSC05277.JPG`, alt: 'Relic Top in Green, side view showing the laced side', focus: '50% 40%' },
-          { src: `${ROCK}/DSC05283.JPG`, alt: 'Relic Top in Green, back view showing the open back', focus: '50% 40%' },
-          { src: `${ROCK}/DSC05284.JPG`, alt: 'Relic Top in Green, back view while climbing', focus: '50% 40%' },
-          { src: `${ROCK}/DSC05296.JPG`, alt: 'Relic Top in Green, three-quarter back view', focus: '50% 40%' },
-          { src: `${ROCK}/DSC05363.JPG`, alt: 'Relic Top in Green, close view of the neckline', focus: '50% 30%' },
+          { src: `${ROCK}/DSC05261 2.JPG`, alt: 'Prima Top in Green, worn with jeans, front view against a rock face', focus: '50% 30%' },
+          { src: `${ROCK}/DSC05274.JPG`, alt: 'Prima Top in Green, front view with the halter neck tied', focus: '50% 30%' },
+          { src: `${ROCK}/DSC05277.JPG`, alt: 'Prima Top in Green, side view showing the laced side', focus: '50% 40%' },
+          { src: `${ROCK}/DSC05283.JPG`, alt: 'Prima Top in Green, back view showing the open back', focus: '50% 40%' },
+          { src: `${ROCK}/DSC05284.JPG`, alt: 'Prima Top in Green, back view while climbing', focus: '50% 40%' },
+          { src: `${ROCK}/DSC05296.JPG`, alt: 'Prima Top in Green, three-quarter back view', focus: '50% 40%' },
+          { src: `${ROCK}/DSC05363.JPG`, alt: 'Prima Top in Green, close view of the neckline', focus: '50% 30%' },
         ],
       },
       {
@@ -118,11 +118,26 @@ export const products: Product[] = [
       green: { XS: 4, S: 4, M: 4, L: 4, XL: 4 },
     },
     inventory: null,
-    // Suggestions from the photographs, to confirm before publishing:
-    // halter neck tied with knotted straps, laced side, open back, long back panel.
-    details: null,
-    fit: null,
-    care: null,
+    details: [
+      'Faux suede halter with an open back and long ties.',
+      'Hand-cut bodice that contours with a slight flare.',
+      'One side is hand-laced so you can adjust the fit.',
+      'Main: 95% polyester, 5% elastane faux suede.',
+      'Lacing: tan wax cord.',
+      'Cut, sewn and laced by hand in Brisbane, Australia.',
+      'Made to order just for you.',
+    ],
+    fit: [
+      'Lilli wears size S.',
+      'The laced side adjusts, so you can wear it snug or a little looser.',
+      'If you’re between sizes, we recommend sizing down.',
+    ],
+    care: [
+      'Spot clean, or gently hand wash cold.',
+      'Unlace the cord before washing.',
+      'Lay flat to dry. Don’t tumble dry or iron.',
+      'The raw edges are meant to be raw — faux suede won’t fray.',
+    ],
   },
 ];
 
@@ -131,13 +146,13 @@ export const site = {
   hero: {
     desktop: {
       src: `${ROCK}/DSC05265 2.JPG`,
-      alt: 'Model climbing a rock face in the Relic Top, seen from behind, with the coast below',
+      alt: 'Model climbing a rock face in the Prima Top, seen from behind, with the coast below',
       focus: '55% 50%',
     } satisfies ImageRef,
     // No separate mobile photograph supplied; this is a portrait crop of the same image.
     mobile: {
       src: `${ROCK}/DSC05265 2.JPG`,
-      alt: 'Model climbing a rock face in the Relic Top, seen from behind, with the coast below',
+      alt: 'Model climbing a rock face in the Prima Top, seen from behind, with the coast below',
       focus: '50% 50%',
       crop: { left: 0.1, top: 0, width: 0.67, height: 1 },
     } satisfies ImageRef,
@@ -166,8 +181,10 @@ export const site = {
     instagramHandle: '@esotericathelabel',
   },
   policies: {
-    shipping: null as string | null,
-    returns: null as string | null,
+    shipping:
+      'Every piece is made to order, so please allow 5–7 business days for your top to be made. It then ships with Australia Post Parcel Post (tracked), which usually takes 2–6 business days. Flat rate shipping is $12 Australia-wide. We don’t ship overseas just yet.' as string | null,
+    returns:
+      'Because each top is made just for you, we don’t offer refunds or exchanges for change of mind. If the fit isn’t right, message within 14 days of delivery and we’ll work something out. This doesn’t affect your rights under the Australian Consumer Law — if your piece arrives faulty or not as described, you’re entitled to a repair, replacement or refund.' as string | null,
   },
   /**
    * Charged on the server and shown before payment. Provisional until a carrier
@@ -178,7 +195,7 @@ export const site = {
     amount: 12,
     currency: 'AUD' as const,
     countries: ['AU'] as const,
-    note: 'Provisional flat rate for delivery within Australia. The carrier and delivery time are not finalised yet.',
+    note: 'Allow 5–7 business days to make, then 2–6 business days via Australia Post Parcel Post (tracked). Australia only.',
   },
   /** How long an unpaid Stripe Checkout holds making capacity. Stripe requires at least 30 minutes. */
   checkoutHoldMinutes: 60,
