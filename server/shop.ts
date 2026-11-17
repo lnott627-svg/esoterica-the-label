@@ -143,7 +143,7 @@ export class Shop {
         .prepare(`UPDATE reservations SET status = 'released', idempotency_key = NULL WHERE id = ? AND status = 'held'`)
         .run(id);
       if (error instanceof OrderError) throw error;
-      console.error('[esoterica] Stripe Checkout could not be created');
+      console.error('[esoterica] Stripe Checkout could not be created', error);
       throw new OrderError('payments', 'The payment page could not be opened. Nothing was charged. Try again.');
     }
   }
