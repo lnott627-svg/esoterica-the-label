@@ -149,12 +149,11 @@ export const site = {
       alt: 'Model climbing a rock face in the Prima Top, seen from behind, with the coast below',
       focus: '55% 50%',
     } satisfies ImageRef,
-    // No separate mobile photograph supplied; this is a portrait crop of the same image.
     mobile: {
-      src: `${ROCK}/DSC05265 2.JPG`,
-      alt: 'Model climbing a rock face in the Prima Top, seen from behind, with the coast below',
+      src: `${ROCK}/aperol-side.jpg`,
+      alt: 'Side view of the Prima Top in Green on a balcony, laced detail along the torso, with jeans and an Aperol spritz on the table',
       focus: '50% 50%',
-      crop: { left: 0.1, top: 0, width: 0.67, height: 1 },
+      crop: { left: 0.1, top: 0, width: 0.5, height: 1 },
     } satisfies ImageRef,
   },
   about: {
