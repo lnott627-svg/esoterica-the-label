@@ -4,3 +4,7 @@ dist/
 data/
 .env
 .DS_Store
+
+# Source photographs; the processed public/images/* variants are committed instead.
+esoterica top photos/
+brand assets - web photos/
