@@ -152,8 +152,8 @@ export const site = {
     mobile: {
       src: `${ROCK}/aperol-side.jpg`,
       alt: 'Side view of the Prima Top in Green on a balcony, laced detail along the torso, with jeans and an Aperol spritz on the table',
-      focus: '50% 50%',
-      crop: { left: 0.1, top: 0, width: 0.5, height: 1 },
+      focus: '50% 45%',
+      crop: { left: 0.18, top: 0, width: 0.5, height: 1 },
     } satisfies ImageRef,
   },
   about: {
