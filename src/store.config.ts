@@ -73,7 +73,7 @@ export const products: Product[] = [
     id: 'relic-top',
     name: 'Relic Top',
     nameConfirmed: false,
-    price: { amount: 80, currency: 'AUD' },
+    price: { amount: 110, currency: 'AUD' },
     colours: [
       {
         id: 'brown',
@@ -118,11 +118,26 @@ export const products: Product[] = [
       green: { XS: 4, S: 4, M: 4, L: 4, XL: 4 },
     },
     inventory: null,
-    // Suggestions from the photographs, to confirm before publishing:
-    // halter neck tied with knotted straps, laced side, open back, long back panel.
-    details: null,
-    fit: null,
-    care: null,
+    details: [
+      'Faux suede halter with an open back and long ties.',
+      'Hand-cut bodice that contours with a slight flare.',
+      'One side is hand-laced so you can adjust the fit.',
+      'Main: 95% polyester, 5% elastane faux suede.',
+      'Lacing: tan wax cord.',
+      'Cut, sewn and laced by hand in Brisbane, Australia.',
+      'Made to order just for you.',
+    ],
+    fit: [
+      'Lilli wears size S.',
+      'The laced side adjusts, so you can wear it snug or a little looser.',
+      'If you’re between sizes, we recommend sizing down.',
+    ],
+    care: [
+      'Spot clean, or gently hand wash cold.',
+      'Unlace the cord before washing.',
+      'Lay flat to dry. Don’t tumble dry or iron.',
+      'The raw edges are meant to be raw — faux suede won’t fray.',
+    ],
   },
 ];
 
@@ -166,8 +181,10 @@ export const site = {
     instagramHandle: '@esotericathelabel',
   },
   policies: {
-    shipping: null as string | null,
-    returns: null as string | null,
+    shipping:
+      'Every piece is made to order, so please allow 5–7 business days for your top to be made. It then ships with Australia Post Parcel Post (tracked), which usually takes 2–6 business days. Flat rate shipping is $12 Australia-wide. We don’t ship overseas just yet.' as string | null,
+    returns:
+      'Because each top is made just for you, we don’t offer refunds or exchanges for change of mind. If the fit isn’t right, message within 14 days of delivery and we’ll work something out. This doesn’t affect your rights under the Australian Consumer Law — if your piece arrives faulty or not as described, you’re entitled to a repair, replacement or refund.' as string | null,
   },
   /**
    * Charged on the server and shown before payment. Provisional until a carrier
@@ -178,7 +195,7 @@ export const site = {
     amount: 12,
     currency: 'AUD' as const,
     countries: ['AU'] as const,
-    note: 'Provisional flat rate for delivery within Australia. The carrier and delivery time are not finalised yet.',
+    note: 'Allow 5–7 business days to make, then 2–6 business days via Australia Post Parcel Post (tracked). Australia only.',
   },
   /** How long an unpaid Stripe Checkout holds making capacity. Stripe requires at least 30 minutes. */
   checkoutHoldMinutes: 60,
