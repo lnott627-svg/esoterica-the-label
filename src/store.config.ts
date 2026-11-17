@@ -71,8 +71,8 @@ const ROCK = 'esoterica top photos';
 export const products: Product[] = [
   {
     id: 'relic-top',
-    name: 'Relic Top',
-    nameConfirmed: false,
+    name: 'Prima Top',
+    nameConfirmed: true,
     price: { amount: 110, currency: 'AUD' },
     colours: [
       {
@@ -89,13 +89,13 @@ export const products: Product[] = [
         status: 'available',
         // Provisional rock-face portraits; to be replaced with white-background footage.
         images: [
-          { src: `${ROCK}/DSC05261 2.JPG`, alt: 'Relic Top in Green, worn with jeans, front view against a rock face', focus: '50% 30%' },
-          { src: `${ROCK}/DSC05274.JPG`, alt: 'Relic Top in Green, front view with the halter neck tied', focus: '50% 30%' },
-          { src: `${ROCK}/DSC05277.JPG`, alt: 'Relic Top in Green, side view showing the laced side', focus: '50% 40%' },
-          { src: `${ROCK}/DSC05283.JPG`, alt: 'Relic Top in Green, back view showing the open back', focus: '50% 40%' },
-          { src: `${ROCK}/DSC05284.JPG`, alt: 'Relic Top in Green, back view while climbing', focus: '50% 40%' },
-          { src: `${ROCK}/DSC05296.JPG`, alt: 'Relic Top in Green, three-quarter back view', focus: '50% 40%' },
-          { src: `${ROCK}/DSC05363.JPG`, alt: 'Relic Top in Green, close view of the neckline', focus: '50% 30%' },
+          { src: `${ROCK}/DSC05261 2.JPG`, alt: 'Prima Top in Green, worn with jeans, front view against a rock face', focus: '50% 30%' },
+          { src: `${ROCK}/DSC05274.JPG`, alt: 'Prima Top in Green, front view with the halter neck tied', focus: '50% 30%' },
+          { src: `${ROCK}/DSC05277.JPG`, alt: 'Prima Top in Green, side view showing the laced side', focus: '50% 40%' },
+          { src: `${ROCK}/DSC05283.JPG`, alt: 'Prima Top in Green, back view showing the open back', focus: '50% 40%' },
+          { src: `${ROCK}/DSC05284.JPG`, alt: 'Prima Top in Green, back view while climbing', focus: '50% 40%' },
+          { src: `${ROCK}/DSC05296.JPG`, alt: 'Prima Top in Green, three-quarter back view', focus: '50% 40%' },
+          { src: `${ROCK}/DSC05363.JPG`, alt: 'Prima Top in Green, close view of the neckline', focus: '50% 30%' },
         ],
       },
       {
@@ -146,13 +146,13 @@ export const site = {
   hero: {
     desktop: {
       src: `${ROCK}/DSC05265 2.JPG`,
-      alt: 'Model climbing a rock face in the Relic Top, seen from behind, with the coast below',
+      alt: 'Model climbing a rock face in the Prima Top, seen from behind, with the coast below',
       focus: '55% 50%',
     } satisfies ImageRef,
     // No separate mobile photograph supplied; this is a portrait crop of the same image.
     mobile: {
       src: `${ROCK}/DSC05265 2.JPG`,
-      alt: 'Model climbing a rock face in the Relic Top, seen from behind, with the coast below',
+      alt: 'Model climbing a rock face in the Prima Top, seen from behind, with the coast below',
       focus: '50% 50%',
       crop: { left: 0.1, top: 0, width: 0.67, height: 1 },
     } satisfies ImageRef,
