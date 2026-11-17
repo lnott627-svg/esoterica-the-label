@@ -240,9 +240,11 @@ p {
     object-position: var(--focus-mobile, 50% 50%);
   }
   .hero__wordmark {
-    top: 20%;
-    left: var(--pad);
-    font-size: 14px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: clamp(40px, 12vw, 64px);
+    letter-spacing: 0.02em;
   }
 }
 

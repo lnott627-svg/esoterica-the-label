@@ -147,7 +147,7 @@
     "source": "esoterica top photos/DSC05363.JPG",
     "sourceMtime": 1789352683447.9226
   },
-  "aperol-side-c10-0-50-100": {
+  "aperol-side-c18-0-50-100": {
     "width": 1000,
     "height": 1500,
     "widths": [
@@ -155,8 +155,8 @@
       800,
       1000
     ],
-    "bg": "#423c33",
+    "bg": "#383734",
     "source": "esoterica top photos/aperol-side.jpg",
-    "sourceMtime": 1794880311187.7092
+    "sourceMtime": 1794881710702.6863
   }
 }
